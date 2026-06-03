@@ -85,3 +85,6 @@ s-stop:
 # ==========================================
 clean: s-stop down
 	docker system prune -f
+
+status:
+	@docker ps --filter "name=gemfire-management-console" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
