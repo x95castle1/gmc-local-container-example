@@ -1,0 +1,19 @@
+services:
+  gemfire-management-console:
+    image: registry.packages.broadcom.com/gemfire-management-console/gemfire-management-console:1.4.5
+    container_name: gemfire-management-console
+    ports:
+      - "8080:8080"  # Change to "443:443" if you change server.port to 443 in application.properties
+    volumes:
+      # Persistent storage for GMC configurations and cluster metadata
+      - gmc-data:/opt/gemfire/VMware_GemFire_Management_Console
+
+      # Mount the properties file directly into the working directory
+      - ./application.properties:/opt/gemfire/application.properties:ro
+
+      # Optional: Uncomment if you use SSL/TLS and need keys inside the container
+      # - ./certs:/opt/gemfire/certs:ro
+    restart: unless-stopped
+
+volumes:
+  gmc-data:
