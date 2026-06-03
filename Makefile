@@ -40,9 +40,15 @@ check-jar:
 # DOCKER COMPOSE SHORTCUTS
 # ==========================================
 
-start: check-jar
+start:
 	docker compose up -d --build
-	@echo "GMC started! View logs with 'make logs' or visit http://localhost:8080"
+	@echo "Waiting for GMC to be ready..."
+	@until [ "$$(docker inspect --format='{{.State.Health.Status}}' gemfire-management-console 2>/dev/null)" = "healthy" ]; do \
+		printf '.'; \
+		sleep 2; \
+	done
+	@echo ""
+	@echo "GMC is ready! Visit http://localhost:8080"
 
 stop:
 	docker compose down
@@ -58,15 +64,16 @@ logs:
 # ==========================================
 
 s-build: check-jar
-	docker build -t $(IMAGE_NAME):$(TAG) .
+	docker build -t $(IMAGE_NAME)-standalone:$(TAG) .
 
 s-run:
+	@docker rm -f $(IMAGE_NAME)-standalone 2>/dev/null || true
 	@echo "Starting standalone container..."
 	docker run -d \
 		--name $(IMAGE_NAME)-standalone \
 		-p 8080:8080 \
 		-v $(PWD)/$(PROPERTIES):/opt/gemfire/application.properties:ro \
-		$(IMAGE_NAME):$(TAG)
+		$(IMAGE_NAME)-standalone:$(TAG)
 	@echo "Container running! Access at http://localhost:8080"
 
 s-stop:

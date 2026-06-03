@@ -12,3 +12,10 @@ Before deploying the console, ensure you have the following requirements met:
    To authenticate, log into the [Broadcom Customer Support Portal](https://support.broadcom.com), navigate to **My Downloads**, click **Registry Tokens**, and copy your token. Then execute:
 ```bash
    docker login registry.packages.broadcom.com
+```
+
+3. **Pull the GMC Docker Image**: Once authenticated, pull the GMC image from Broadcom's registry. This downloads the pre-built management console image to your local machine so it's available for Docker Compose or standalone use.
+
+```bash
+   docker pull registry.packages.broadcom.com/gemfire-management-console/gemfire-management-console:1.4.5
+```
